@@ -1,0 +1,16 @@
+ops:
+
+add (singular node w/ values)
+remove (leaf)
+copy (w/ subtree under some other node)
+change (change metadata)
+
+what about children perm?
+
+
+algorithm:
+1) fit before/after trees as well as possible
+1.1) what about matching children?
+1.2) find a simple measure of tree similarity, # of add/delete ops needed
+2) for non-matched parts of the tree, try to match them by moving a subtree somewhere. use a measure kinda like # of good fixed vs # of bad created
+3) fill rest of the tree with additions and deletions

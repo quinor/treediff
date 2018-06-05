@@ -1,0 +1,28 @@
+syntax = "proto3";
+package gopkg.in.bblfsh.sdk.v2.uast;
+
+message Node {
+    oneof node {
+        bytes  value  = 1;
+        Object object = 2;
+        Array  array  = 3;
+    }
+}
+
+// message Value {
+//     oneof value {
+//         bool null = 1;
+//         string str = 2;
+//         int64 int = 3;
+//         double float = 4;
+//         bool bool = 5;
+//     }
+// }
+
+message Object {
+    map<string,Node> fields = 1;
+}
+
+message Array {
+    repeated Node array = 1;
+}
