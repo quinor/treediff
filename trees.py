@@ -1,24 +1,13 @@
 class Node:
     def __init__(self):
-        self.parent = None
-        self.label = None
-
-    @property
-    def path(self):
-        if self.parent is None:
-            return []
-        return self.parent.path+[self.label]
-
-    @property
-    def serialized_path(self):
-        return "/".join(str(e) for e in self.path)
+        pass
 
 
 class Value(Node):
     def __init__(self, val):
         super().__init__()
         self.value = val
-        self.desc = "Value {}".format(self.value)
+        self.desc = "Value", self.value
         self.size = 1
 
     def print(self, pre=""):
@@ -28,20 +17,22 @@ class Value(Node):
 class Object(Node):
     def __init__(self, dct):
         super().__init__()
-        self.desc = "Object"
+        self.desc = "Object", None
         self.fields = dct
-        for k, v in self.fields.items():
-            v.parent = self
-            v.label = k
-        self.size = 1 + sum(e.size for e in self.fields.values())
 
-    def add_field(self, k, v):
+    @property
+    def size(self):
+        return 1 + sum(e.size for e in self.fields.values())
+
+    def __setitem__(self, k, v):
         self.fields[k] = v
-        v.parent = self
-        v.label = k
 
     def remove_field(self, k):
+        assert k in self.fields
         del self.fields[k]
+
+    def __getitem__(self, k):
+        return self.fields[k]
 
     def print(self, pre=""):
         print("FIELDS:")
@@ -54,17 +45,26 @@ class Object(Node):
 class Array(Node):
     def __init__(self, arr):
         super().__init__()
-        self.desc = "Array"
+        self.desc = "Array", len(arr)
         self.array = arr
-        for k, v in enumerate(self.array):
-            v.parent = self
-            v.label = k
-        self.size = 1 + sum(e.size for e in arr)
 
-    def add_field(self, k, v):
+    @property
+    def size(self):
+        return 1 + sum(e.size for e in self.array)
+
+    def __setitem__(self, k, v):
+        while len(self.array) <= k:
+            self.array.append(None)
         self.array[k] = v
-        v.parent = self
-        v.label = k
+
+    def remove_field(self, k):
+        self.array[k] = None
+        while self.array and self.array[-1] is None:
+            self.array.pop()
+
+    def __getitem__(self, k):
+        assert k < len(self.array)
+        return self.array[k]
 
     def print(self, pre=""):
         print("ELEMENTS:")
@@ -77,7 +77,7 @@ class Array(Node):
 class Empty(Node):
     def __init__(self):
         super().__init__()
-        self.desc = "Empty"
+        self.desc = "Empty", None
         self.size = 1
 
     def print(self, pre=""):
@@ -85,11 +85,9 @@ class Empty(Node):
 
 
 class Placeholder(Node):
-    def __init__(self, parent=None, label=None):
+    def __init__(self):
         super().__init__()
-        self.desc = "Placeholder"
-        self.parent = parent
-        self.label = label
+        self.desc = "Placeholder", None
         self.size = 0
 
     def print(self, pre=""):

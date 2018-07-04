@@ -12,6 +12,9 @@ def main(base):
     before = trees.to_tree(uast_before)
     after = trees.to_tree(uast_after)
     changelist = distance.distance(before, after)
+    modified = distance.apply(before, changelist)
+    new_dist = distance.distance(before, modified)
+    assert len(new_dist) == 0
     print("distance: {} \tsum: {}".format(len(changelist), before.size+after.size))
 
 

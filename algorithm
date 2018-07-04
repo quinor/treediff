@@ -27,3 +27,12 @@ two-pass algorithm
 2) generate changelist based on decisions from 1)
 
 goal: load src and changelist, generate dst
+
+
+
+changelist ops
+
+add <id> <type> [value]
+remove <id>
+modify <new_value>
+permute <perm>
