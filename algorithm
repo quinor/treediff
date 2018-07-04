@@ -14,3 +14,16 @@ algorithm:
 1.2) find a simple measure of tree similarity, # of add/delete ops needed
 2) for non-matched parts of the tree, try to match them by moving a subtree somewhere. use a measure kinda like # of good fixed vs # of bad created
 3) fill rest of the tree with additions and deletions
+
+
+
+add     (parent_id, place)
+remove (id)
+modify (id, new value)
+permute (id, new perm)
+
+two-pass algorithm
+1) just inspect distances, choose best (with caching so consecutive passes are quick)
+2) generate changelist based on decisions from 1)
+
+goal: load src and changelist, generate dst

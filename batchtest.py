@@ -3,6 +3,7 @@
 from glob import glob
 import data
 import trees
+import distance
 
 
 def main(base):
@@ -10,8 +11,8 @@ def main(base):
     uast_before, uast_after, src_before, src_after = data.get_data(base)
     before = trees.to_tree(uast_before)
     after = trees.to_tree(uast_after)
-    changelist, dist = trees.distance(before, after)
-    print("distance: {}\tsum: {}".format(dist, before.size+after.size))
+    changelist = distance.distance(before, after)
+    print("distance: {} \tsum: {}".format(len(changelist), before.size+after.size))
 
 
 pwd = "/home/quinor/data/sourced/treediff/dataset/"

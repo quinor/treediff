@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 
-from data import *
-from trees import *
+import data
+import trees
+import distance
 
 base = "/home/quinor/data/sourced/treediff/dataset/67_0"
-uast_before, uast_after, src_before, src_after = get_data(base)
+uast_before, uast_after, src_before, src_after = data.get_data(base)
 
-before = to_tree(uast_before)
-after = to_tree(uast_after)
+before = trees.to_tree(uast_before)
+after = trees.to_tree(uast_after)
 
-d, l = distance(before, after)
+ch = distance.distance(before, after)
 
-print(len(d), l)
+print(len(ch))
 
-for c in d:
+for c in ch:
     print(c)
