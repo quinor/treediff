@@ -27,8 +27,13 @@ class Value(Node):
 class Object(Node):
     def __init__(self, dct):
         super().__init__()
-        self.desc = "Object", None
         self.fields = dct
+        if isinstance(dct, list):
+            raise Exception("wth?!")
+
+    @property
+    def desc(self):
+        return "Object", {}
 
     @property
     def size(self):
@@ -64,8 +69,11 @@ class Object(Node):
 class Array(Node):
     def __init__(self, arr):
         super().__init__()
-        self.desc = "Array", len(arr)
         self.array = arr
+
+    @property
+    def desc(self):
+        return "Array", [None for _ in range(len(self.array))]
 
     @property
     def size(self):
@@ -105,16 +113,6 @@ class Array(Node):
             elt.print(pre)
 
 
-class Empty(Node):
-    def __init__(self):
-        super().__init__()
-        self.desc = "Empty", None
-        self.size = 1
-
-    def print(self, pre=""):
-        print("<EMPTY>")
-
-
 class Placeholder(Node):
     def __init__(self):
         super().__init__()
@@ -131,8 +129,8 @@ def to_tree(ast):
     if ast.HasField("object"):
         ob = Object({n: to_tree(v) for n, v in ast.object.fields.items()})
         if "@type" in ob.fields and ob.fields["@type"].value == b'\x12\x0cast:Position':
-            return Empty()  # position invariance
+            return Object({})  # position invariance
         return ob
     if ast.HasField("array"):
         return Array([to_tree(e) for i, e in enumerate(ast.array.array)])
-    return Empty()
+    return Object({})  # that is an empty node!

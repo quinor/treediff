@@ -32,7 +32,13 @@ goal: load src and changelist, generate dst
 
 changelist ops
 
-add <id> <type> [value]
-remove <id>
-modify <new_value>
-permute <perm>
+add <id> (<key> <loc_id> <type> [value])
+remove <id> <key>
+modify <id> <new_value>
+permute <id> <perm>
+
+create <loc_id> <type> [value]
+delete <id>
+attach <id> <key> <child_id>
+deattach <id> <key>
+permute <id> <perm>

@@ -1,4 +1,4 @@
-from trees import Placeholder, Empty, Value, Object, Array
+from trees import Placeholder, Value, Object, Array
 import numpy as np
 import lapjv
 import copy
@@ -20,9 +20,6 @@ def decision(src, dst):
     if src.__class__ != dst.__class__:
         decision_map[lbl] = best_decision
         return best_decision
-
-    if isinstance(src, Empty):
-        best_decision = min(best_decision, (0, "same", None))
 
     if isinstance(src, Value):
         best_decision = min(
@@ -79,9 +76,12 @@ def decision(src, dst):
 
 
 def add_r(node, parent_id, idx, counter, changes):
+    if isinstance(node, Placeholder):
+        return
     newid = counter[0]
     counter[0] -= 1
-    changes.append(("add", parent_id, (idx, newid, *node.desc)),)
+    changes.append(("create", newid, *node.desc),)
+    changes.append(("attach", parent_id, idx, newid),)
 
     if isinstance(node, Object):
         for ind, e in node.fields.items():
@@ -91,7 +91,7 @@ def add_r(node, parent_id, idx, counter, changes):
             add_r(e, newid, ind, counter, changes)
 
 
-def changelist(src, dst, parent, idx, counter, changes):
+def changelist(src, dst, parent_id, idx, counter, changes):
     """
     writes changelist that can be used on src to perform transition to dst
     """
@@ -101,14 +101,9 @@ def changelist(src, dst, parent, idx, counter, changes):
         # no changes needed
         pass
 
-    if action is "replace":
-        if not isinstance(src, Placeholder):  # placeholders don't need to be removed
-            changes.append(("remove", parent.id, idx),)
-        if not isinstance(dst, Placeholder):  # placeholders don't need to be inserted either
-            add_r(dst, parent.id, idx, counter, changes)
-
-    if action is "change_value":
-        changes.append(("modify", src.id, dst.value),)
+    if action in ("replace", "change_value"):
+        add_r(dst, parent_id, idx, counter, changes)
+        # lack of removal
 
     if action is "match":
         keys = set(src.fields.keys()).union(set(dst.fields.keys()))
@@ -116,9 +111,10 @@ def changelist(src, dst, parent, idx, counter, changes):
             if key not in src.fields:
                 add_r(dst[key], src.id, key, counter, changes)
             elif key not in dst.fields:
-                changes.append(("remove", src.id, key),)
+                changes.append(("deattach", src.id, key),)
+                # lack of removal
             else:
-                changelist(src[key], dst[key], src, key, counter, changes)
+                changelist(src[key], dst[key], src.id, key, counter, changes)
 
     if action is "permute":
         perm = params
@@ -130,17 +126,15 @@ def changelist(src, dst, parent, idx, counter, changes):
         elif d < 0:
             c1 += [Placeholder() for _ in range(-d)]
         if any(a != b for a, b in enumerate(perm)) or d != 0:
-            changes.append(("permute", src.id, perm),)
+            changes.append(("create", src.id, "Array", [c1[e] for e in perm]),)
+            changes.append(("attach", parent_id, idx, src.id))
         for i, e in enumerate(perm):
-            changelist(c1[e], c2[i], src, i, counter, changes)
+            changelist(c1[e], c2[i], src.id, i, counter, changes)
 
 
 def distance(src, dst):
     changes = []
-    changelist(src, dst, None, -1, [-1], changes)
-    c, _, __ = decision(src, dst)
-    if c != len(changes):
-        print("KURWA, KURWA! {} {}".format(c, len(changes)))
+    changelist(src, dst, 0, -1, [-1], changes)
     decision_map.clear()
     return changes
 
@@ -151,32 +145,28 @@ def apply(src, changes):
     src.traverse(lambda node: nodes.__setitem__(node.id, node))
 
     for change in changes:
-        operation, target, params = change
-        target = nodes[target]
+        operation, target, *params = change
 
-        if operation is "add":
-            key, handle, op, v = params
+        if operation is "create":
+            op, v = params
             if op is "Value":
                 n = Value(v)
             if op is "Object":
-                n = Object({})
+                n = Object(v)
             if op is "Array":
-                n = Array([None for _ in range(v)])
-            if op is "Empty":
-                n = Empty()
-            nodes[n.id] = nodes[handle] = n
-            target[key] = n
+                n = Array(v)
+            nodes[n.id] = nodes[target] = n
+
+        if operation is "attach":
+            key, child = params
+            nodes[target][key] = nodes[child]
+
+        if operation is "deattach":
+            key, = params
+            nodes[target].remove_field(key)
 
         if operation is "remove":
-            target.remove_field(params)
-
-        if operation is "modify":
-            target.value = params
-
-        if operation is "permute":
-            l = target.array[:]
-            for _ in range(len(params)-len(l)):
-                l.append(None)
-            target.array = [l[pos] for pos in params]
+            # do nothing cause GC
+            pass
 
     return src
