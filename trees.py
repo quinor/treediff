@@ -1,6 +1,16 @@
 class Node:
+    _counter = 0
+
     def __init__(self):
-        pass
+        self.id = self._counter
+        Node._counter += 1
+
+    @property
+    def max_id(self):
+        return self.id
+
+    def traverse(self, fn):
+        fn(self)
 
 
 class Value(Node):
@@ -23,6 +33,15 @@ class Object(Node):
     @property
     def size(self):
         return 1 + sum(e.size for e in self.fields.values())
+
+    @property
+    def max_id(self):
+        return max(self.id, 0, *(e.max_id for e in self.fields.values()))
+
+    def traverse(self, fn):
+        fn(self)
+        for e in self.fields.values():
+            e.traverse(fn)
 
     def __setitem__(self, k, v):
         self.fields[k] = v
@@ -51,6 +70,18 @@ class Array(Node):
     @property
     def size(self):
         return 1 + sum(e.size for e in self.array)
+
+    @property
+    def max_id(self):
+        try:
+            return max(0, self.id, *(e.max_id for e in self.array))
+        except Exception:
+            print(self.array)
+
+    def traverse(self, fn):
+        fn(self)
+        for e in self.array:
+            e.traverse(fn)
 
     def __setitem__(self, k, v):
         while len(self.array) <= k:

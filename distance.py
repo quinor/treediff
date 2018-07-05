@@ -35,11 +35,11 @@ def decision(src, dst):
         res = 0
         for key in keys:
             if key not in src.fields:
-                res += dst.fields[key].size  # insert subtree
+                res += dst[key].size  # insert subtree
             elif key not in dst.fields:
                 res += 1  # remove subtree
             else:
-                r, d, p = decision(src.fields[key], dst.fields[key])
+                r, d, p = decision(src[key], dst[key])
                 res += r
         best_decision = min(
             best_decision,
@@ -78,17 +78,20 @@ def decision(src, dst):
     return best_decision
 
 
-def add_r(node, path, changes):
-    changes.append(("add", path[:-1], (path[-1], node.desc)),)
+def add_r(node, parent_id, idx, counter, changes):
+    newid = counter[0]
+    counter[0] -= 1
+    changes.append(("add", parent_id, (idx, newid, *node.desc)),)
+
     if isinstance(node, Object):
         for ind, e in node.fields.items():
-            add_r(e, path+[ind], changes)
+            add_r(e, newid, ind, counter, changes)
     if isinstance(node, Array):
         for ind, e in enumerate(node.array):
-            add_r(e, path+[ind], changes)
+            add_r(e, newid, ind, counter, changes)
 
 
-def changelist(src, dst, path, changes):
+def changelist(src, dst, parent, idx, counter, changes):
     """
     writes changelist that can be used on src to perform transition to dst
     """
@@ -100,23 +103,22 @@ def changelist(src, dst, path, changes):
 
     if action is "replace":
         if not isinstance(src, Placeholder):  # placeholders don't need to be removed
-            changes.append(("remove", path[:-1], path[-1]),)
+            changes.append(("remove", parent.id, idx),)
         if not isinstance(dst, Placeholder):  # placeholders don't need to be inserted either
-            add_r(dst, path, changes)
+            add_r(dst, parent.id, idx, counter, changes)
 
     if action is "change_value":
-        changes.append(("modify", path, dst.value),)
+        changes.append(("modify", src.id, dst.value),)
 
     if action is "match":
         keys = set(src.fields.keys()).union(set(dst.fields.keys()))
         for key in keys:
-            newpath = path+[key]
             if key not in src.fields:
-                add_r(dst.fields[key], newpath, changes)
+                add_r(dst[key], src.id, key, counter, changes)
             elif key not in dst.fields:
-                changes.append(("remove", newpath[:-1], newpath[-1]),)
+                changes.append(("remove", src.id, key),)
             else:
-                changelist(src.fields[key], dst.fields[key], newpath, changes)
+                changelist(src[key], dst[key], src, key, counter, changes)
 
     if action is "permute":
         perm = params
@@ -128,14 +130,14 @@ def changelist(src, dst, path, changes):
         elif d < 0:
             c1 += [Placeholder() for _ in range(-d)]
         if any(a != b for a, b in enumerate(perm)) or d != 0:
-            changes.append(("permute", path, perm),)
+            changes.append(("permute", src.id, perm),)
         for i, e in enumerate(perm):
-            changelist(c1[e], c2[i], path+[i], changes)
+            changelist(c1[e], c2[i], src, i, counter, changes)
 
 
 def distance(src, dst):
     changes = []
-    changelist(src, dst, [], changes)
+    changelist(src, dst, None, -1, [-1], changes)
     c, _, __ = decision(src, dst)
     if c != len(changes):
         print("KURWA, KURWA! {} {}".format(c, len(changes)))
@@ -143,33 +145,17 @@ def distance(src, dst):
     return changes
 
 
-def apply(src, changelist):
+def apply(src, changes):
     src = copy.copy(src)  # now we can modify freely
-    path = []
-    stack = [src]
-    for change in changelist:
-        operation, loc_path, params = change
-        same_pref = min(
-            len(path),
-            len(loc_path),
-            *(i for i, (a, b) in enumerate(zip(path, loc_path)) if a != b)
-        )
-        for _ in range(len(path)-same_pref):
-            path.pop()
-            stack.pop()
-        try:
-            for el in loc_path[same_pref:]:
-                path.append(el)
-                stack.append(stack[-1][el])
-        except Exception as e:
-            print(path)
-            print(loc_path)
-            print(stack[-1].fields.keys())
-            print(operation)
-            raise e
+    nodes = {}
+    src.traverse(lambda node: nodes.__setitem__(node.id, node))
+
+    for change in changes:
+        operation, target, params = change
+        target = nodes[target]
 
         if operation is "add":
-            key, (op, v) = params
+            key, handle, op, v = params
             if op is "Value":
                 n = Value(v)
             if op is "Object":
@@ -178,18 +164,19 @@ def apply(src, changelist):
                 n = Array([None for _ in range(v)])
             if op is "Empty":
                 n = Empty()
-            stack[-1][key] = n
+            nodes[n.id] = nodes[handle] = n
+            target[key] = n
 
         if operation is "remove":
-            stack[-1].remove_field(params)
+            target.remove_field(params)
 
         if operation is "modify":
-            stack[-1].value = params
+            target.value = params
 
         if operation is "permute":
-            l = stack[-1].array[:]
+            l = target.array[:]
             for _ in range(len(params)-len(l)):
                 l.append(None)
-            stack[-1].array = [l[pos] for pos in params]
+            target.array = [l[pos] for pos in params]
 
     return src
