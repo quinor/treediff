@@ -28,8 +28,6 @@ class Object(Node):
     def __init__(self, dct):
         super().__init__()
         self.fields = dct
-        if isinstance(dct, list):
-            raise Exception("wth?!")
 
     @property
     def desc(self):
@@ -81,10 +79,7 @@ class Array(Node):
 
     @property
     def max_id(self):
-        try:
-            return max(0, self.id, *(e.max_id for e in self.array))
-        except Exception:
-            print(self.array)
+        return max(0, self.id, *(e.max_id for e in self.array))
 
     def traverse(self, fn):
         fn(self)
@@ -123,14 +118,25 @@ class Placeholder(Node):
         print("<EMPTY>")
 
 
-def to_tree(ast):
-    if ast.HasField("value"):
-        return Value(ast.value)
-    if ast.HasField("object"):
-        ob = Object({n: to_tree(v) for n, v in ast.object.fields.items()})
-        if "@type" in ob.fields and ob.fields["@type"].value == b'\x12\x0cast:Position':
-            return Object({})  # position invariance
-        return ob
-    if ast.HasField("array"):
-        return Array([to_tree(e) for i, e in enumerate(ast.array.array)])
-    return Object({})  # that is an empty node!
+def to_tree(graph):
+    node_dict = {}
+    for node in graph.nodes:
+        node_dict[node.id] = node
+
+    def build(idx):
+        if idx == 0:
+            return Object({})
+        obj = node_dict[idx]
+        if obj.HasField("value"):
+            return Value(obj.value)
+        if obj.HasField("object"):
+            ob = Object({node_dict[n].value: build(v) for n, v in obj.object.links.items()})
+            TY = b"\n\x05@type"
+            PO = b"\n\x0cast:Position"
+            if TY in ob.fields and ob.fields[TY].value == PO:
+                return Object({})  # position invariance
+            return ob
+        if obj.HasField("array"):
+            return Array([build(e) for e in obj.array.nodes])
+        raise Exception("empty node")
+    return build(graph.root)

@@ -1,0 +1,71 @@
+syntax = "proto3";
+package gopkg.in.bblfsh.sdk.v2.uast.nodes;
+
+// Node is a union type of nodes in the graph.
+message Node {
+    // ID is a unique file-local ID of the node.
+    // To implement global IDs, application should write additional data to the graph
+    // or keep a mapping from file-local IDs to global ones.
+    uint64 id = 1;
+    oneof node {
+        Object object = 2;
+        Array  array  = 3;
+        // Value stores an encoded representation of primitive values.
+        // By default, Value proto encoding is used.
+        // The field left as bytes instead of Value to allow implementations
+        // to compare or store values without decoding them. Values are assumed
+        // to be portable between Graphs.
+        bytes  value  = 4;
+    }
+}
+
+// Object is a node that has a set of named references to other nodes (fields).
+message Object {
+    // Links is a map of links from current node to other nodes. Zero ID represents a null node.
+    // Multiple links of the same type should point to a distinct Array node.
+    map<uint64,uint64> links = 1;
+}
+
+// Array is an ordered set of nodes.
+message Array {
+    // Nodes stores an ordered list of node IDs. Zero ID represents a null node.
+    repeated uint64 nodes = 1;
+}
+
+// Graph stores one or more nodes with all their relations.
+// Implementation might use the Graph structure to store trees.
+// In this case decoder should keep track of unused nodes that will become tree roots.
+message Graph {
+    // Nodes is a set of all nodes in the graph.
+    // Items in the list should always be sorted by ID (ascending).
+    repeated Node nodes = 1;
+    // LastID is a last node ID used by ID allocator for this graph. Implementation may reserve some
+    // IDs space by setting LastID > max(nodes.ID). If not set, max(nodes.ID) is assumed.
+    // Tools that manipulate the graph, but want to preserve IDs of the nodes should allocate IDs
+    // starting from LastID+1.
+    uint64 last_id = 2;
+    // Root is an optional ID of a global root for this graph. This field is used to preserve
+    // compatibility with tools that expect a tree-shaped data.
+    // Implementation may also store multiple roots by referencing an Array node, or may store
+    // multiple named roots by referencing an Object node.
+    // If not set explicitly, implementations that expect a tree should search the graph for
+    // unused nodes of type Object or Array and treat them as an array of roots.
+    uint64 root = 3;
+    // Metadata is an optional ID for a metadata node for this file. Should reference an Object.
+    // If set, implementations that expect a tree should exclude it from the list of roots.
+    uint64 metadata = 4;
+}
+
+// Value is a union for primitive value types.
+// These values are always leaf nodes, they should never store any references to other nodes,
+// or other graph-specific information.
+// It is assumed that encoded Value can be copied to a different Graph without any changes.
+message Value {
+    oneof value {
+        string string = 1;
+        int64  int    = 2;
+        uint64 uint   = 3;
+        double float  = 4;
+        bool   bool   = 5;
+    }
+}
