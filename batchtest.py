@@ -4,6 +4,7 @@ from glob import glob
 import data
 import trees
 import distance
+import changelist
 
 
 def main(base):
@@ -11,11 +12,13 @@ def main(base):
     uast_before, uast_after, src_before, src_after = data.get_data(base)
     before = trees.to_tree(uast_before)
     after = trees.to_tree(uast_after)
-    changelist = distance.distance(before, after)
-    modified = distance.apply(before, changelist)
+    ch = distance.distance(before, after)
+    pb = changelist.changelist_to_proto(ch)
+    ch = changelist.proto_to_changelist(pb)
+    modified = distance.apply(before, ch)
     new_dist = distance.distance(before, modified)
-    assert len(new_dist) == 0
-    print("distance: {} \tsum: {}".format(len(changelist), before.size+after.size))
+    assert len(new_dist.changes) == 0
+    print("distance: {} \tsum: {}".format(len(ch.changes), before.size+after.size))
 
 
 pwd = "/home/quinor/data/sourced/treediff/dataset/"

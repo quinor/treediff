@@ -1,9 +1,17 @@
-class Node:
-    _counter = 0
+import copy
 
-    def __init__(self):
-        self.id = self._counter
-        Node._counter += 1
+
+class Node:
+    def __init__(self, idx):
+        self.id = idx
+
+    @property
+    def size(self):
+        return 0
+
+    @property
+    def desc(self):
+        return "Node", None
 
     @property
     def max_id(self):
@@ -14,20 +22,26 @@ class Node:
 
 
 class Value(Node):
-    def __init__(self, val):
-        super().__init__()
+    def __init__(self, idx, val):
+        super().__init__(idx)
         self.value = val
-        self.desc = "Value", self.value
-        self.size = 1
+
+    @property
+    def size(self):
+        return 1
+
+    @property
+    def desc(self):
+        return "Value", self.value
 
     def print(self, pre=""):
         print(self.value)
 
 
 class Object(Node):
-    def __init__(self, dct):
-        super().__init__()
-        self.fields = dct
+    def __init__(self, idx, dct):
+        super().__init__(idx)
+        self.fields = copy.copy(dct)
 
     @property
     def desc(self):
@@ -50,6 +64,8 @@ class Object(Node):
         self.fields[k] = v
 
     def remove_field(self, k):
+        if k not in self.fields:
+            print(k)
         assert k in self.fields
         del self.fields[k]
 
@@ -65,13 +81,13 @@ class Object(Node):
 
 
 class Array(Node):
-    def __init__(self, arr):
-        super().__init__()
-        self.array = arr
+    def __init__(self, idx, arr):
+        super().__init__(idx)
+        self.array = copy.copy(arr)
 
     @property
     def desc(self):
-        return "Array", [None for _ in range(len(self.array))]
+        return "Array", [0 for _ in range(len(self.array))]
 
     @property
     def size(self):
@@ -125,18 +141,18 @@ def to_tree(graph):
 
     def build(idx):
         if idx == 0:
-            return Object({})
+            return Node(0)
         obj = node_dict[idx]
         if obj.HasField("value"):
-            return Value(obj.value)
+            return Value(idx, obj.value)
         if obj.HasField("object"):
-            ob = Object({node_dict[n].value: build(v) for n, v in obj.object.links.items()})
+            ob = Object(idx, {node_dict[n].value: build(v) for n, v in obj.object.links.items()})
             TY = b"\n\x05@type"
             PO = b"\n\x0cast:Position"
             if TY in ob.fields and ob.fields[TY].value == PO:
-                return Object({})  # position invariance
+                return Object(idx, {})  # position invariance
             return ob
         if obj.HasField("array"):
-            return Array([build(e) for e in obj.array.nodes])
+            return Array(idx, [build(e) for e in obj.array.nodes])
         raise Exception("empty node")
     return build(graph.root)

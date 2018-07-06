@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='uast_v2_1.proto',
   package='gopkg.in.bblfsh.sdk.v2.uast.nodes',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fuast_v2_1.proto\x12!gopkg.in.bblfsh.sdk.v2.uast.nodes\"\xa3\x01\n\x04Node\x12\n\n\x02id\x18\x01 \x01(\x04\x12;\n\x06object\x18\x02 \x01(\x0b\x32).gopkg.in.bblfsh.sdk.v2.uast.nodes.ObjectH\x00\x12\x39\n\x05\x61rray\x18\x03 \x01(\x0b\x32(.gopkg.in.bblfsh.sdk.v2.uast.nodes.ArrayH\x00\x12\x0f\n\x05value\x18\x04 \x01(\x0cH\x00\x42\x06\n\x04node\"{\n\x06Object\x12\x43\n\x05links\x18\x01 \x03(\x0b\x32\x34.gopkg.in.bblfsh.sdk.v2.uast.nodes.Object.LinksEntry\x1a,\n\nLinksEntry\x12\x0b\n\x03key\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x04:\x02\x38\x01\"\x16\n\x05\x41rray\x12\r\n\x05nodes\x18\x01 \x03(\x04\"p\n\x05Graph\x12\x36\n\x05nodes\x18\x01 \x03(\x0b\x32\'.gopkg.in.bblfsh.sdk.v2.uast.nodes.Node\x12\x0f\n\x07last_id\x18\x02 \x01(\x04\x12\x0c\n\x04root\x18\x03 \x01(\x04\x12\x10\n\x08metadata\x18\x04 \x01(\x04\"b\n\x05Value\x12\x10\n\x06string\x18\x01 \x01(\tH\x00\x12\r\n\x03int\x18\x02 \x01(\x03H\x00\x12\x0e\n\x04uint\x18\x03 \x01(\x04H\x00\x12\x0f\n\x05\x66loat\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x42\x07\n\x05valueb\x06proto3')
+  serialized_pb=_b('\n\x0fuast_v2_1.proto\x12!gopkg.in.bblfsh.sdk.v2.uast.nodes\"\xa3\x01\n\x04Node\x12\n\n\x02id\x18\x01 \x01(\x04\x12;\n\x06object\x18\x02 \x01(\x0b\x32).gopkg.in.bblfsh.sdk.v2.uast.nodes.ObjectH\x00\x12\x39\n\x05\x61rray\x18\x03 \x01(\x0b\x32(.gopkg.in.bblfsh.sdk.v2.uast.nodes.ArrayH\x00\x12\x0f\n\x05value\x18\x04 \x01(\x0cH\x00\x42\x06\n\x04node\"{\n\x06Object\x12\x43\n\x05links\x18\x01 \x03(\x0b\x32\x34.gopkg.in.bblfsh.sdk.v2.uast.nodes.Object.LinksEntry\x1a,\n\nLinksEntry\x12\x0b\n\x03key\x18\x01 \x01(\x04\x12\r\n\x05value\x18\x02 \x01(\x04:\x02\x38\x01\"\x16\n\x05\x41rray\x12\r\n\x05nodes\x18\x01 \x03(\x04\"p\n\x05Graph\x12\x36\n\x05nodes\x18\x01 \x03(\x0b\x32\'.gopkg.in.bblfsh.sdk.v2.uast.nodes.Node\x12\x0f\n\x07last_id\x18\x02 \x01(\x04\x12\x0c\n\x04root\x18\x03 \x01(\x04\x12\x10\n\x08metadata\x18\x04 \x01(\x04\"b\n\x05Value\x12\x10\n\x06string\x18\x01 \x01(\tH\x00\x12\r\n\x03int\x18\x02 \x01(\x03H\x00\x12\x0e\n\x04uint\x18\x03 \x01(\x04H\x00\x12\x0f\n\x05\x66loat\x18\x04 \x01(\x01H\x00\x12\x0e\n\x04\x62ool\x18\x05 \x01(\x08H\x00\x42\x07\n\x05value\"Y\n\nChangelist\x12:\n\x07\x63hanges\x18\x01 \x03(\x0b\x32).gopkg.in.bblfsh.sdk.v2.uast.nodes.Change\x12\x0f\n\x07last_id\x18\x02 \x01(\x04\"\xec\x01\n\x06\x43hange\x12\x39\n\x06\x63reate\x18\x01 \x01(\x0b\x32\'.gopkg.in.bblfsh.sdk.v2.uast.nodes.NodeH\x00\x12\x10\n\x06\x64\x65lete\x18\x02 \x01(\x04H\x00\x12;\n\x06\x61ttach\x18\x03 \x01(\x0b\x32).gopkg.in.bblfsh.sdk.v2.uast.nodes.AttachH\x00\x12?\n\x08\x64\x65\x61ttach\x18\x04 \x01(\x0b\x32+.gopkg.in.bblfsh.sdk.v2.uast.nodes.DeattachH\x00\x12\r\n\x05tx_id\x18\x05 \x01(\x04\x42\x08\n\x06\x63hange\"4\n\x06\x41ttach\x12\x0e\n\x06parent\x18\x01 \x01(\x04\x12\x0b\n\x03key\x18\x02 \x01(\x04\x12\r\n\x05\x63hild\x18\x03 \x01(\x04\"\'\n\x08\x44\x65\x61ttach\x12\x0e\n\x06parent\x18\x01 \x01(\x04\x12\x0b\n\x03key\x18\x02 \x01(\x04\x62\x06proto3')
 )
 
 
@@ -292,6 +292,189 @@ _VALUE = _descriptor.Descriptor(
   serialized_end=581,
 )
 
+
+_CHANGELIST = _descriptor.Descriptor(
+  name='Changelist',
+  full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Changelist',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='changes', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Changelist.changes', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='last_id', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Changelist.last_id', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=583,
+  serialized_end=672,
+)
+
+
+_CHANGE = _descriptor.Descriptor(
+  name='Change',
+  full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='create', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.create', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='delete', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.delete', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='attach', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.attach', index=2,
+      number=3, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='deattach', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.deattach', index=3,
+      number=4, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='tx_id', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.tx_id', index=4,
+      number=5, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+    _descriptor.OneofDescriptor(
+      name='change', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Change.change',
+      index=0, containing_type=None, fields=[]),
+  ],
+  serialized_start=675,
+  serialized_end=911,
+)
+
+
+_ATTACH = _descriptor.Descriptor(
+  name='Attach',
+  full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Attach',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='parent', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Attach.parent', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='key', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Attach.key', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='child', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Attach.child', index=2,
+      number=3, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=913,
+  serialized_end=965,
+)
+
+
+_DEATTACH = _descriptor.Descriptor(
+  name='Deattach',
+  full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Deattach',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='parent', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Deattach.parent', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='key', full_name='gopkg.in.bblfsh.sdk.v2.uast.nodes.Deattach.key', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=967,
+  serialized_end=1006,
+)
+
 _NODE.fields_by_name['object'].message_type = _OBJECT
 _NODE.fields_by_name['array'].message_type = _ARRAY
 _NODE.oneofs_by_name['node'].fields.append(
@@ -321,11 +504,31 @@ _VALUE.fields_by_name['float'].containing_oneof = _VALUE.oneofs_by_name['value']
 _VALUE.oneofs_by_name['value'].fields.append(
   _VALUE.fields_by_name['bool'])
 _VALUE.fields_by_name['bool'].containing_oneof = _VALUE.oneofs_by_name['value']
+_CHANGELIST.fields_by_name['changes'].message_type = _CHANGE
+_CHANGE.fields_by_name['create'].message_type = _NODE
+_CHANGE.fields_by_name['attach'].message_type = _ATTACH
+_CHANGE.fields_by_name['deattach'].message_type = _DEATTACH
+_CHANGE.oneofs_by_name['change'].fields.append(
+  _CHANGE.fields_by_name['create'])
+_CHANGE.fields_by_name['create'].containing_oneof = _CHANGE.oneofs_by_name['change']
+_CHANGE.oneofs_by_name['change'].fields.append(
+  _CHANGE.fields_by_name['delete'])
+_CHANGE.fields_by_name['delete'].containing_oneof = _CHANGE.oneofs_by_name['change']
+_CHANGE.oneofs_by_name['change'].fields.append(
+  _CHANGE.fields_by_name['attach'])
+_CHANGE.fields_by_name['attach'].containing_oneof = _CHANGE.oneofs_by_name['change']
+_CHANGE.oneofs_by_name['change'].fields.append(
+  _CHANGE.fields_by_name['deattach'])
+_CHANGE.fields_by_name['deattach'].containing_oneof = _CHANGE.oneofs_by_name['change']
 DESCRIPTOR.message_types_by_name['Node'] = _NODE
 DESCRIPTOR.message_types_by_name['Object'] = _OBJECT
 DESCRIPTOR.message_types_by_name['Array'] = _ARRAY
 DESCRIPTOR.message_types_by_name['Graph'] = _GRAPH
 DESCRIPTOR.message_types_by_name['Value'] = _VALUE
+DESCRIPTOR.message_types_by_name['Changelist'] = _CHANGELIST
+DESCRIPTOR.message_types_by_name['Change'] = _CHANGE
+DESCRIPTOR.message_types_by_name['Attach'] = _ATTACH
+DESCRIPTOR.message_types_by_name['Deattach'] = _DEATTACH
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Node = _reflection.GeneratedProtocolMessageType('Node', (_message.Message,), dict(
@@ -370,6 +573,34 @@ Value = _reflection.GeneratedProtocolMessageType('Value', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:gopkg.in.bblfsh.sdk.v2.uast.nodes.Value)
   ))
 _sym_db.RegisterMessage(Value)
+
+Changelist = _reflection.GeneratedProtocolMessageType('Changelist', (_message.Message,), dict(
+  DESCRIPTOR = _CHANGELIST,
+  __module__ = 'uast_v2_1_pb2'
+  # @@protoc_insertion_point(class_scope:gopkg.in.bblfsh.sdk.v2.uast.nodes.Changelist)
+  ))
+_sym_db.RegisterMessage(Changelist)
+
+Change = _reflection.GeneratedProtocolMessageType('Change', (_message.Message,), dict(
+  DESCRIPTOR = _CHANGE,
+  __module__ = 'uast_v2_1_pb2'
+  # @@protoc_insertion_point(class_scope:gopkg.in.bblfsh.sdk.v2.uast.nodes.Change)
+  ))
+_sym_db.RegisterMessage(Change)
+
+Attach = _reflection.GeneratedProtocolMessageType('Attach', (_message.Message,), dict(
+  DESCRIPTOR = _ATTACH,
+  __module__ = 'uast_v2_1_pb2'
+  # @@protoc_insertion_point(class_scope:gopkg.in.bblfsh.sdk.v2.uast.nodes.Attach)
+  ))
+_sym_db.RegisterMessage(Attach)
+
+Deattach = _reflection.GeneratedProtocolMessageType('Deattach', (_message.Message,), dict(
+  DESCRIPTOR = _DEATTACH,
+  __module__ = 'uast_v2_1_pb2'
+  # @@protoc_insertion_point(class_scope:gopkg.in.bblfsh.sdk.v2.uast.nodes.Deattach)
+  ))
+_sym_db.RegisterMessage(Deattach)
 
 
 _OBJECT_LINKSENTRY.has_options = True

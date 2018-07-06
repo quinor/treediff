@@ -69,3 +69,29 @@ message Value {
         bool   bool   = 5;
     }
 }
+
+message Changelist {
+    repeated Change changes = 1;
+    uint64 last_id          = 2;
+}
+
+message Change {
+    oneof change {
+        Node     create = 1;
+        uint64   delete = 2;
+        Attach   attach = 3;
+        Deattach deattach = 4;
+    }
+    uint64 tx_id = 5;
+}
+
+message Attach {
+    uint64 parent   = 1;
+    uint64 key      = 2;
+    uint64 child    = 3;
+}
+
+message Deattach {
+    uint64 parent   = 1;
+    uint64 key      = 2;
+}
