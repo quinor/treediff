@@ -1,11 +1,11 @@
-from trees import Node, Value, Object, Array
-from changelist import Changelist
+from .graph import Node, Value, Object, Array
+from .changelist import Changelist
 import numpy as np
 import lapjv
 import copy
 
 
-decision_map = {}
+decision_map = {}  # cache
 
 
 def decision(src, dst):
@@ -86,6 +86,7 @@ def key_id(changelist, key):
 
 def add_r(node, parent_id, idx, changelist):
     if node.id == 0:
+        changelist.changes.append(("attach", parent_id, key_id(changelist, idx), 0),)
         return
     newid = changelist.new_id()
     changelist.changes.append(("create", newid, *node.desc),)
@@ -141,55 +142,9 @@ def difference(src, dst, parent_id, idx, changelist):
 
 
 def distance(src, dst):
+    src = src.root
+    dst = dst.root
     changes = Changelist(src.max_id)
     difference(src, dst, 0, -1, changes)
     decision_map.clear()
     return changes
-
-
-def apply(src, changelist):
-    max_id = changelist.max_id
-    assert changelist.max_id >= src.max_id
-    src = copy.copy(src)  # now we can modify freely
-    nodes = {}
-    src.traverse(lambda node: nodes.__setitem__(node.id, node))
-
-    for change in changelist.changes:
-        operation, loc_target, *params = change
-        if loc_target < 0:
-            target = max_id - loc_target
-        else:
-            target = loc_target
-
-        if operation is "create":
-            op, v = params
-            if op is "Value":
-                n = Value(target, v)
-            if op is "Object":
-                n = Object(target, {k: nodes[val] for k, val in v})
-            if op is "Array":
-                n = Array(target, [nodes[e] for e in v])
-            nodes[loc_target] = nodes[target] = n
-
-        if operation is "attach":
-            key, child = params
-            if isinstance(nodes[target], Object):
-                key = nodes[key].value
-            nodes[target][key] = nodes[child]
-
-        if operation is "deattach":
-            key, = params
-            if isinstance(nodes[target], Object):
-                key = nodes[key].value
-            try:
-                nodes[target].remove_field(key)
-            except Exception as e:
-                print(nodes[target])
-                print(key)
-                raise e
-
-        if operation is "delete":
-            # do nothing cause GC
-            pass
-
-    return src

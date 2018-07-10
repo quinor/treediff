@@ -1,4 +1,5 @@
 from glob import glob
+import os
 
 from uast_v2_1_pb2 import Graph
 
@@ -17,3 +18,9 @@ def get_data(base):
     with open(uast_after, "rb") as fin:
         uast_after = Graph.FromString(fin.read())
     return uast_before, uast_after, src_before, src_after
+
+def default_dataset():
+    pwd = os.path.expanduser("~/data/sourced/treediff/dataset/")
+    names = glob(pwd+"*after*.src")
+    names = [e.split("/")[-1].split("_")[:2] for e in names]
+    return names

@@ -2,30 +2,38 @@
 
 from glob import glob
 import data
-import trees
-import distance
-import changelist
+from difflib import Graph, Changelist, distance
+import random
+import code
+
+
+def same(t1, t2):
+    new_dist = distance(t1, t2)
+    assert len(new_dist.changes) == 0
+    new_dist = distance(t2, t1)
+    assert len(new_dist.changes) == 0
 
 
 def main(base):
     print(base)
     uast_before, uast_after, src_before, src_after = data.get_data(base)
-    before = trees.to_tree(uast_before)
-    after = trees.to_tree(uast_after)
-    ch = distance.distance(before, after)
-    pb = changelist.changelist_to_proto(ch)
-    ch = changelist.proto_to_changelist(pb)
-    modified = distance.apply(before, ch)
-    new_dist = distance.distance(before, modified)
-    assert len(new_dist.changes) == 0
-    print("distance: {} \tsum: {}".format(len(ch.changes), before.size+after.size))
+    before = Graph(uast_before)
+    after = Graph(uast_after)
+
+    before2 = Graph(before.to_pb())
+    same(before, before2)
+    ch = distance(before, after)
+    modified = before2.apply(ch)
+
+    print("distance: {} \tsum: {}".format(len(ch.changes), before.root.size+after.root.size))
+    same(after, modified)
 
 
 pwd = "/home/quinor/data/sourced/treediff/dataset/"
 #pwd = "./local_data/"
 if __name__ == "__main__":
-    names = glob(pwd+"*after*.src")
-    names = [e.split("/")[-1].split("_")[:2] for e in names]
+    names = data.default_dataset()[12:]
+#    random.shuffle(names)
     print(len(names))
     for a, b in names:
         main(pwd+"{}_{}".format(a, b))
